@@ -60,12 +60,13 @@ public class Process extends Thread {
                 Work();
             } catch (InterruptedException e) {
                 programCounter -= 5000; // simula que ejecuta por 5 segundos en cada vuelta
+                mutex.release();
             }
         }
     }
 
     public void Work() throws InterruptedException {
-        //mutex.acquire();
+        mutex.acquireUninterruptibly();
         System.out.println(this.getProcessName() + " working");
         sleep(programCounter);
         finish();
@@ -78,6 +79,6 @@ public class Process extends Thread {
         programCounter = 20000;
         System.out.println(getProcessName() + " done");
         this.state = states.DONE;
-        //mutex.release();
+        mutex.release();
     }
 }

@@ -6,12 +6,16 @@ public class Main {
         Process process3 = new Process("Process 3", scheduler);
         Process process4 = new Process("Process 4", scheduler);
         Process process5 = new Process("Process 5", scheduler);
+
+        Process processBlock1 = new Process("Process Block 1", scheduler);
+        Process processBlock2 = new Process("Process Block 2", scheduler);
         scheduler.start();
         process1.start();
-        process2.start();
-        /*process3.start();
+
+        /*process2.start();
+        process3.start();
         process4.start();
-        process5.start();
+        process5.start();*/
         /*scheduler.start();
         process1.start();
         process2.start();

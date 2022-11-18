@@ -43,7 +43,7 @@ public class Scheduler extends Thread {
             if (estadoInicial == "IN_PROGRESS") {
                 System.out.println(procesoEnEjecucion.peek().getProcessName()  + " has not ended, RR continues");
                 procesoEnEjecucion.peek().interrupt();
-                //procesoEnEjecucion.peek().setEstadoREADY();
+                procesoEnEjecucion.peek().setEstadoREADY();
                 Listo(procesoEnEjecucion.peek());
             }
             // proceso terminó
