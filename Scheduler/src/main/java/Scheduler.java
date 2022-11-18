@@ -1,18 +1,17 @@
-import java.util.LinkedList;
 import java.util.Queue;
 
 public class Scheduler extends Thread {
 
     //private Syncro syncro;
-    public Queue<Process> procesosListos = new LinkedList<>();
+    public Queue<Process> procesosListos = new Lista<>();
 
-    public Queue<Process> procesosBloqueados = new LinkedList<>();
+    public Queue<Process> procesosBloqueados = new Lista<>();
 
-    public Queue<Process> procesosSuspendidoListo = new LinkedList<>();
+    public Queue<Process> procesosSuspendidoListo = new Lista<>();
 
-    public Queue<Process> procesosSuspendidoBloqueado = new LinkedList<>();
+    public Queue<Process> procesosSuspendidoBloqueado = new Lista<>();
 
-    public Queue<Process> procesoEnEjecucion = new LinkedList<>();
+    public Queue<Process> procesoEnEjecucion = new Lista<>();
 
     public Scheduler(){//Syncro syncro) {
         //this.syncro = syncro;
@@ -33,7 +32,7 @@ public class Scheduler extends Thread {
             // ejecuto proceso
             EnEjecucion(procesosListos.peek());
             String estadoInicial = "IN_PROGRESS";
-            int timeout = 1;
+            int timeout = 2000000000;
             // mientras el proceso no haya cambiado el estado
             // y no se le haya acabado el tiempo de procesador (timeout) ejecuta
             while (timeout != 0 && (procesoEnEjecucion.peek().getEstado() == estadoInicial)) {
@@ -42,23 +41,24 @@ public class Scheduler extends Thread {
             estadoInicial = procesoEnEjecucion.peek().getEstado();
             // proceso no terminó
             if (estadoInicial == "IN_PROGRESS") {
-                System.out.println("process has not ended");
-                procesoEnEjecucion.peek().run();
+                System.out.println(procesoEnEjecucion.peek().getProcessName()  + " has not ended, RR continues");
+                procesoEnEjecucion.peek().interrupt();
+                //procesoEnEjecucion.peek().setEstadoREADY();
+                Listo(procesoEnEjecucion.peek());
             }
             // proceso terminó
-            if (estadoInicial == "DONE") {
-                System.out.println("process has ended");
+            else if (estadoInicial == "DONE") {
+                System.out.println(procesoEnEjecucion.peek().getProcessName() + " has ended");
             }
             // proceso se bloqueó
             else if (estadoInicial == "BLOCKED") {
-                Block(procesoEnEjecucion.peek());
-                System.out.println("process has been blocked");
+                System.out.println("process has been blocked, RR continues");
             }
             // proceso fue suspendido
             else if (estadoInicial == "SUSPENDED") {
-                Suspender(procesoEnEjecucion.peek());
-                System.out.println("process has been suspended");
+                System.out.println("process has been suspended, RR continues");
             }
+            procesoEnEjecucion.remove(procesoEnEjecucion.peek());
         }
     }
 
@@ -73,6 +73,7 @@ public class Scheduler extends Thread {
         proceso.setEstadoIN_PROGRESS();
         System.out.println("executing process " + proceso.getProcessName() + "...");
         procesoEnEjecucion.add(proceso);
+        procesosListos.remove(proceso);
 
         // despierto a todos los procesos, pero
         // solo ejecutara el que tenga el estado IN_PROGRESS
@@ -81,8 +82,8 @@ public class Scheduler extends Thread {
             Syncro.syncro.notifyAll();
         }
 
-        // simulo trabajo
-        procesosListos.remove(proceso);
+        // simulo trabajo dentro del proceso
+
     }
 
     public void Suspender(Process proceso) {
@@ -99,7 +100,12 @@ public class Scheduler extends Thread {
         }
     }
 
-    public void Block(Process process) {
-        // mientras recurso este ocupado bloqueo
+    public void Block(Process process, Resource resource) throws InterruptedException {
+        while (resource.enUso) {
+            synchronized (resource) {
+                wait();
+            }
+        }
+        resource.usar();
     }
 }

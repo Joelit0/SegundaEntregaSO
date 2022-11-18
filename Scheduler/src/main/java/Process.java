@@ -1,10 +1,8 @@
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.Timer;
+import java.util.concurrent.Semaphore;
 import java.lang.Thread;
 
 public class Process extends Thread {
-    private enum states {
+    protected enum states {
         READY,
         IN_PROGRESS,
         BLOCKED,
@@ -12,9 +10,12 @@ public class Process extends Thread {
         DONE
     }
 
-    private String processName;
-    private states state;
-    private Scheduler scheduler;
+    private Semaphore mutex = new Semaphore(1);
+    protected String processName;
+    protected states state;
+    protected Scheduler scheduler;
+
+    protected int programCounter;
 
 
     public String getProcessName() {
@@ -35,45 +36,48 @@ public class Process extends Thread {
         this.state = states.IN_PROGRESS;
     }
 
+    public void setEstadoREADY() {
+        this.state = states.READY;
+    }
+
     @Override
     public void run() {
+        programCounter = 20000;
         System.out.println("initializing process thread...");
-        System.out.println("process ready to execute");
         this.state = states.READY;
         scheduler.Listo(this);
-        while (state != states.IN_PROGRESS){
-            try {
-                synchronized (Syncro.syncro)
-                {
-                    Syncro.syncro.wait();
+        while (this.state != states.DONE) {
+            while (this.state != states.IN_PROGRESS) {
+                try {
+                    synchronized (Syncro.syncro) {
+                        Syncro.syncro.wait();
+                    }
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
                 }
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
             }
-        }
-        try {
-            System.out.println(Thread.currentThread().getName());
-            Work();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+            try {
+                Work();
+            } catch (InterruptedException e) {
+                programCounter -= 5000; // simula que ejecuta por 5 segundos en cada vuelta
+            }
         }
     }
 
     public void Work() throws InterruptedException {
-        System.out.println("working...");
-        sleep(1000000000);
+        //mutex.acquire();
+        System.out.println(this.getProcessName() + " working");
+        sleep(programCounter);
         finish();
     }
 
-    public void block() {
-        System.out.println("Bloqueando");
-        this.state = states.BLOCKED;
-        this.interrupt();
+    public void use(Resource resource) throws InterruptedException {
     }
 
     public void finish() {
-        System.out.println("done");
+        programCounter = 20000;
+        System.out.println(getProcessName() + " done");
         this.state = states.DONE;
-        this.interrupt();
+        //mutex.release();
     }
 }
