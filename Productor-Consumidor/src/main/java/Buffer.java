@@ -11,14 +11,14 @@ public class Buffer {
     private Semaphore vacio = new Semaphore(0);
     private Semaphore mutex = new Semaphore(1);
 
-    public void insertar_al_final(String nombreProductor, String dato) {
+    public void insertar(String nombreProductor, String dato) {
 
         try {
             lleno.acquire();
             mutex.acquire();
 
-            System.out.println("Productor " + nombreProductor + " produjo " + dato);
             lista[p_a_i] = dato;
+            System.out.println("Productor " + nombreProductor + " produjo " + dato + " de la posicón " + p_a_i);
             p_a_i = (p_a_i + 1) % 20;
             cantidad++;
 
@@ -32,7 +32,7 @@ public class Buffer {
         }
     }
 
-    public String extraer_primero(String nombreConsumidor) {
+    public String extraer(String nombreConsumidor) {
         String dato;
 
         try {
@@ -40,11 +40,10 @@ public class Buffer {
             mutex.acquire();
 
             dato = lista[p_a_e];
+            System.out.println("Consumidor " + nombreConsumidor + " consumio " + dato + " de la posicón " + p_a_e);
             lista[p_a_e] = null;
             p_a_e = (p_a_e + 1) % 20;
             cantidad--;
-
-            System.out.println("Consumidor " + nombreConsumidor + " consumio " + dato);
 
             mutex.release();
 

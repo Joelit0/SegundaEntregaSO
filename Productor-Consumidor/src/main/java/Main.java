@@ -6,11 +6,11 @@ public class Main {
         Buffer buffer = new Buffer();
 
         for (int i = 0; i < PRODUCTOR; i++) {
-            new Productor("Productor " + i, buffer).start();
+            new Productor(String.valueOf(i), buffer).start();
         }
 
         for (int i = 0; i < CONSUMIDOR; i++) {
-            new Consumidor("Consumidor " + i, buffer).start();
+            new Consumidor(String.valueOf(i), buffer).start();
         }
     }
 }

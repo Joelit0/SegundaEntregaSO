@@ -15,7 +15,7 @@ public class Productor extends Thread {
         Random r = new Random();
 
         while(true) {
-            buffer.insertar_al_final(
+            buffer.insertar(
                     this.name,
                     String.valueOf(letras[r.nextInt(26)])
             );
