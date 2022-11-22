@@ -1,5 +1,6 @@
 import java.util.LinkedList;
 
+// LinkedList con sincronizacion
 public class Lista<T> extends LinkedList<T> {
 
     @Override
