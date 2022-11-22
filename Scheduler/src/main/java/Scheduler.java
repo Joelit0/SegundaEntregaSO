@@ -38,7 +38,7 @@ public class Scheduler extends Thread {
 
             String estadoInicial = "IN_PROGRESS";
             // quantum de tiempo para timeout
-            int timeout = 2000000000;
+            int timeout = 2147483645;
             // mientras el proceso no haya cambiado el estado
             // y no se le haya acabado el tiempo de procesador (timeout) ejecuta
             while (timeout != 0 && (procesoEnEjecucion.peek().getEstado() == estadoInicial)) {
@@ -54,7 +54,7 @@ public class Scheduler extends Thread {
             }
             // proceso terminó
             else if (estadoInicial == "DONE") {
-                System.out.println(procesoEnEjecucion.peek().getProcessName() + " has ended");
+                //System.out.println(procesoEnEjecucion.peek().getProcessName() + " has ended");
             }
             // proceso se bloqueó por recurso
             else if (estadoInicial == "BLOCKED") {
@@ -77,6 +77,7 @@ public class Scheduler extends Thread {
     }
 
     public synchronized void EnEjecucion(Process proceso) throws InterruptedException {
+
 
         // le doy CPU a proceso
         procesoEnEjecucion.add(proceso);

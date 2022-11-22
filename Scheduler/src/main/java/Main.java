@@ -24,13 +24,13 @@ public class Main {
         // inicializo todos los procesos
         processBlock1.start();
         processBlock2.start();
-        /*processBlock3.start();
+        processBlock3.start();
         processBlock4.start();
-        processBlock5.start();*/
+        processBlock5.start();
         process1.start();
         process2.start();
         process3.start();
-        /*process4.start();
-        process5.start();*/
+        process4.start();
+        process5.start();
     }
 }

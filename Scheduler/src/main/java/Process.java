@@ -72,7 +72,8 @@ public class Process extends Thread {
                 Work();
             // atrapo interrupcion provocada por el timeout
             } catch (InterruptedException e) {
-                scheduler.procesoEnEjecucion.remove(this); // pierde CPU
+                System.out.println(getProcessName() + " timeout");
+                //scheduler.procesoEnEjecucion.remove(this); // pierde CPU
                 scheduler.Listo(this); // vuelve a estar listo
                 programCounter -= 5000; // simula que ejecuta por 5 segundos en cada vuelta
                 mutex.release(); // libero mutua exclusion
