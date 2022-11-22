@@ -10,7 +10,7 @@ public class Consumidor extends Thread {
     @Override
     public void run() {
         while(true) {
-            buffer.extraer_primero(this.name);
+            buffer.extraer(this.name);
         }
     }
 }
