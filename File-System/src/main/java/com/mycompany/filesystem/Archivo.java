@@ -11,31 +11,34 @@ import java.io.File;
  * @author Juan
  */
 public class Archivo {
-    
+
     protected String nombre;
-    
-    protected File contenido;
-    
+   
     protected boolean esDirectorio;
-  
+
     protected Usuario propietario;
-        
+
     protected Permisos permisosGrupo;
-    
+
     protected Permisos permisosUsuario;
-    
-    public String getPropietario(){
+
+    public String getPropietario() {
         return propietario.getNombre();
     }
-    
-    public Permisos getPermisosUsuario(){
+
+    public Permisos getPermisosUsuario() {
         return permisosUsuario;
     }
     
-    public String getNombre(){
+    public Permisos getPermisosGrupo() {
+        return permisosGrupo;
+    }
+
+    public String getNombre() {
         return nombre;
     }
-    
-    public void Abrir(){}
-    
+
+    public void Abrir() {
+    }
+
 }

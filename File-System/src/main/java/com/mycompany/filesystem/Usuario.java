@@ -15,12 +15,9 @@ public class Usuario {
     private String nombre;
     
     private boolean permisosRoot;
-    
-    private LinkedList<Grupo> gruposUsuario;
-    
+        
     public Usuario(String nombre){
         this.nombre = nombre;
-        gruposUsuario = new LinkedList<>();
         if(nombre.equals("root")){
             permisosRoot = true;
         }
@@ -32,10 +29,6 @@ public class Usuario {
     public String getNombre(){
         return this.nombre;
     } 
-    
-    public void agregarGrupo(Grupo grupo){
-        gruposUsuario.add(grupo);
-    }
     
     public boolean getPermisos(){
         return permisosRoot;

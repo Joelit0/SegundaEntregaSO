@@ -5,6 +5,8 @@
 
 package com.mycompany.filesystem;
 
+import java.util.Scanner;
+
 /**
  *
  * @author Juan
@@ -12,89 +14,92 @@ package com.mycompany.filesystem;
 public class FileSystem {
 
     public static void main(String[] args) throws Exception {
-        Grupos.CrearGrupo("sudo");
         
+        Scanner inp = new Scanner(System.in);
+
         Usuarios.CrearUsuario("root");
         
         Sistema.cambiarUsuario("root");
         
-        Directorio directorioPrincipal = new Directorio("Sistema");
+        Grupos.CrearGrupo("sudo");
+        
+        Directorio directorioPrincipal = new Directorio(); 
         
         Sistema.setDirectorioActual(directorioPrincipal);
-              
-        while(true){
-            String input = System.console().readLine();
+        
+        while(true){    
+            String input = inp.nextLine();
             String[] comando_parametros = input.split(" "); 
             Usuario usuarioActual = Sistema.getUsuarioActual();
-            Directorio directorioActual = directorioPrincipal;
-
-            switch(comando_parametros[0]){
-                case "cambiarUsuario":
-                    Sistema.cambiarUsuario(comando_parametros[1]);
-                    break;
-                case "crearUsuario":
-                    if(usuarioActual.getPermisos()){
+            Directorio directorioActual = Sistema.getDirectorioActual();
+            try{
+                switch(comando_parametros[0]){
+                    case "cambiarUsuario":
+                        Sistema.cambiarUsuario(comando_parametros[1]);
+                        break;
+                    case "crearUsuario":
                         Usuarios.CrearUsuario(comando_parametros[1]);
-                    }
-                    else{
-                        System.out.println("No tiene permisos para realizar esta acción");
-                    }
-                    break;
-                case "eliminarUsuario":
-                    if(usuarioActual.getPermisos()){
+                        break;
+                    case "eliminarUsuario":
                         Usuarios.EliminarUsuario(comando_parametros[1]);
-                    }
-                    else{
-                        System.out.println("No tiene permisos para realizar esta acción");
-                    }
-                    break;
-                case "crearGrupo":
-                    Grupos.CrearGrupo(comando_parametros[1]);
-                    break;
-                case "eliminarGrupo":
-                    if(usuarioActual.getPermisos() && !comando_parametros[1].equals("sudo")){
+                        break;
+                    case "crearGrupo":
+                        Grupos.CrearGrupo(comando_parametros[1]);
+                        break;
+                    case "eliminarGrupo":
                         Grupos.EliminarGrupo(comando_parametros[1]);
-                    }
-                    else{
-                        System.out.println("No tiene permisos para realizar esta acción");
-                    }
-                    break;
-                case "agregarUsuarioAGrupo":
-                    if(usuarioActual.getPermisos()){
+                        break;
+                    case "agregarUsuarioAGrupo":
                         Grupos.agregarUsuarioAGrupo(comando_parametros[1], comando_parametros[2]);
-                    }
-                    else{
-                        System.out.println("No tiene permisos para realizar esta acción");
-                    }
-                    break;
-                case "NuevaCarpeta":
-                    if(usuarioActual.getPermisos() || usuarioActual.getNombre().equals(directorioActual.getPropietario()) || directorioActual.getPermisosUsuario().getEscritura()){
+                        break;
+                    case "NuevaCarpeta":
                         Sistema.getDirectorioActual().NuevaCarpeta(comando_parametros[1]);
-                    }
-                    else{
-                        System.out.println("No tiene permisos para realizar esta acción");
-                    }
-                    break;
-                case "NuevoArchivo":
-                    if(usuarioActual.getPermisos() || usuarioActual.getNombre().equals(directorioActual.getPropietario()) || directorioActual.getPermisosUsuario().getEscritura()){
-                        String[] fichero = comando_parametros[1].split(".");
-                        directorioActual.CrearFichero(fichero[0], fichero[1]);
-                    }
-                    else{
-                        System.out.println("No tiene permisos para realizar esta acción");
-                    }
-                    break;
-                case "AbrirCarpeta":
-                    Directorio directorio = directorioActual.AbrirDirectorio(comando_parametros[1]);
-                    if((directorio != null) && (usuarioActual.getPermisos() || directorio.getPropietario().equals(usuarioActual.getNombre()) || directorioActual.getPermisosUsuario().getLectura())){
-                       Sistema.setDirectorioActual(directorio);
-                    }
-                    break;
-                case "AbrirArchivo":
-                    String[] fichero = comando_parametros[1].split(".");
-                    if(usuarioActual.getPermisos() || directorioActual.b)
+                        break;
+                    case "NuevoArchivo":
+                        if(!input.contains(".")){
+                            System.out.println("No puede crear archivos sin extension");
+                        }
+                        else{
+                            String nombreFichero = comando_parametros[1];
+                            String[] ficheroNuevo = nombreFichero.split("\\.");
+                            directorioActual.CrearFichero(ficheroNuevo[0], ficheroNuevo[1]);   
+                        }
+                        break;
+                    case "AbrirCarpeta":
+                        directorioActual.AbrirDirectorio(comando_parametros[1]);
+                        break;
+                    case "AbrirArchivo":
+                        String[] fichero = comando_parametros[1].split("\\.");
+                        Fichero ficheroAAbrir = directorioActual.BuscarFichero(fichero[0], fichero[1]);
+                        if(fichero != null){
+                           ficheroAAbrir.Abrir();
+                        }
+                        break;
+                    case "MostrarArchivos":
+                        directorioActual.MostrarArchivos();
+                        break;
+                    case "..":
+                        Sistema.setDirectorioActual(Sistema.getDirectorioAnterior());
+                        System.out.println("Directorio Actual: "+Sistema.getDirectorioActual().getNombre());
+                        break;
+                    case "cambiarPermisosUsuario":
+                        directorioActual.SetPermisosUsuario(comando_parametros[1], comando_parametros[2]);
+                        break;
+                    case "cambiarPermisosGrupo":
+                        directorioActual.SetPermisosGrupo(comando_parametros[1], comando_parametros[2]);
+                        break;
+                    case "eliminar":
+                        directorioActual.Eliminar(comando_parametros[1]);
+                        break;
+                    case "renombrar":
+                        directorioActual.Renombrar(comando_parametros[1], comando_parametros[2]);
+                        break;
+                    default:
+                        System.out.println("Comando no valido");
+                }
+            }catch(Exception e){
+               System.out.println("Comando no valido");
             }
-            
         }
     }
 }

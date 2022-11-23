@@ -15,25 +15,35 @@ public class Usuarios {
     public static LinkedList<Usuario> usuarios = new LinkedList<>();
     
     public static void CrearUsuario(String nombre) throws Exception{
-        Usuario usuario = buscarUsuario(nombre);
-        if(usuario != null){
-            System.out.println("Usuario ya existente");        
+        if(nombre.equals("root") || Sistema.getUsuarioActual().getPermisos()){
+            Usuario usuario = buscarUsuario(nombre);
+            if(usuario != null){
+                System.out.println("Usuario ya existente");        
+            }
+            else{
+                Usuario nuevoUsuario = new Usuario(nombre);
+                usuarios.add(nuevoUsuario);
+                System.out.println("Usuario creado correctamente");
+            }
         }
         else{
-            Usuario nuevoUsuario = new Usuario(nombre);
-            usuarios.add(nuevoUsuario);
-            System.out.println("Usuario creado correctamente");
+            System.out.println("No tiene permisos para realizar esta acción");
         }
+        
     }
     
     public static void EliminarUsuario(String nombre) throws Exception{
-        Usuario usuario = buscarUsuario(nombre);
-        if(usuario == null){
-            System.out.println("Usuario no existente");        
-        }
-        else{
-            usuarios.remove(usuario);
-            System.out.println("Usuario eliminado correctamente");
+        if(Sistema.getUsuarioActual().getPermisos()){
+            Usuario usuario = buscarUsuario(nombre);
+            if(usuario == null){
+                System.out.println("Usuario no existente");        
+            }
+            else{
+                usuarios.remove(usuario);
+                System.out.println("Usuario eliminado correctamente");
+            }
+        }else{
+            System.out.println("No tiene permisos para realizar esta acción");
         }
     }
     

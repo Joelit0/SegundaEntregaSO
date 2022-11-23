@@ -25,7 +25,11 @@ public class Grupo {
         return this.nombre;
     }
     
-    public boolean ConieneUsuario(String nombre){
+    public LinkedList<Usuario> getUsuarios(){
+        return usuarios;
+    }
+    
+    public boolean ContieneUsuarioPorNombre(String nombre){
         for(Usuario usuario: usuarios){
             if(usuario.getNombre().equals(nombre)){
                 return true;
@@ -34,7 +38,7 @@ public class Grupo {
         return false;
     }
     
-    public void agregarUusario(Usuario usuario){
+    public void agregarUsuario(Usuario usuario){
         usuarios.add(usuario);
     }
 }

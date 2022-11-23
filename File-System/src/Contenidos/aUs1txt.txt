@@ -1,0 +1,2 @@
+contenido del archivo aUs1.txtagregando contenido a aUs1.txt por ususario2
+Ahora el usuario2 tambien puede leer y escribir el archivo.

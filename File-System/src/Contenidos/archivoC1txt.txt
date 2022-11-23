@@ -1,0 +1,5 @@
+contenido del archivoC1agregar contenido al archivoC1.txt
+Ahora lo puede abrir el ususario4 porque tiene permisos de lectura y escritura
+
+Ahora le sacamos los permsisos de usuario y le habilitamos permisos de grupo. 
+Recordar que ususario1 y ususario2 estan en el mismo grupo "grupo1"
